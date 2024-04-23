@@ -1,6 +1,17 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+}
+
+val apikeyPropertiesFile = rootProject.file("apikeys.properties")
+val apikeyProperties = Properties()
+apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
+
+val myProperties = Properties().apply {
+    load(rootProject.file("apikeys.properties").inputStream())
 }
 
 android {
@@ -13,6 +24,14 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        buildFeatures {
+            buildConfig = true
+        }
+
+        val geminiKey = myProperties.getProperty("GEMINI_KEY")
+        buildConfigField("String", "GEMINI_KEY", geminiKey)
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

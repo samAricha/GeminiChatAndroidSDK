@@ -3,12 +3,15 @@ package com.teka.geminichatsdk.gemini_chat.data
 import android.graphics.Bitmap
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import com.teka.geminichatsdk.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object ChatData {
 
-    val api_key = "AIzaSyBtPQG2TNshIZGkNe3DjTfMRdXq8gF1ju0"
+
+    val api_key = BuildConfig.GEMINI_KEY
+
 
     suspend fun getResponse(prompt: String): ChatModel {
         val generativeModel = GenerativeModel(
