@@ -15,6 +15,7 @@ import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
+import com.teka.geminichatsdk.BuildConfig
 import com.teka.geminichatsdk.gemini_chat.data.ApiType
 import com.teka.geminichatsdk.gemini_chat.data.Message
 import com.teka.geminichatsdk.gemini_chat.data.Mode
@@ -56,7 +57,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
         if (model == null) {
             viewModelScope.launch {
-                model = getModel(key = "AIzaSyDlDRTdtwk8L-9zLSaWtLF81W3TA-cdPq4")
+                model = getModel(key = BuildConfig.GEMINI_KEY)
             }
         }
         if (chat == null) {
