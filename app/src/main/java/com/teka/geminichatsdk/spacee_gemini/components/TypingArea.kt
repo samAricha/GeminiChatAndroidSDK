@@ -138,7 +138,7 @@ fun TypingArea(
                 modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
                 onClick = {
                     expanded = false
-                    galleryLauncher?.launch("image/*")
+                    galleryLauncher?.launch("application/*")
                 }
             ) {
                 Icon(
