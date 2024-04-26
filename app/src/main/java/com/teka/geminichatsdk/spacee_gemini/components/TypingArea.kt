@@ -49,7 +49,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.teka.geminichatsdk.R
-import com.teka.geminichatsdk.gemini_chat.data.ApiType
+import com.teka.geminichatsdk.spacee_gemini.utils.ApiType
 import com.teka.geminichatsdk.spacee_gemini.presentation.MainViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)

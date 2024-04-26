@@ -1,36 +1,26 @@
 package com.teka.geminichatsdk.gemini_chat.domain
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.java.ChatFutures
-import com.google.ai.client.generativeai.java.GenerativeModelFutures
 import com.google.ai.client.generativeai.type.BlockThreshold
 import com.google.ai.client.generativeai.type.Content
-import com.google.ai.client.generativeai.type.GenerateContentResponse
 import com.google.ai.client.generativeai.type.GenerationConfig
 import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
 import com.teka.geminichatsdk.BuildConfig
-import com.teka.geminichatsdk.R
-import com.teka.geminichatsdk.gemini_chat.data.ApiType
-import com.teka.geminichatsdk.gemini_chat.data.ChatData
+import com.teka.geminichatsdk.spacee_gemini.utils.ApiType
 import com.teka.geminichatsdk.gemini_chat.data.ChatModel
 import com.teka.geminichatsdk.gemini_chat.data.Message
 import com.teka.geminichatsdk.gemini_chat.data.Mode
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
-import java.util.concurrent.Executor
 
 class GeminiPro {
 

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.spongycode.spaceegemini.components.MessageItem
 import com.teka.geminichatsdk.R
-import com.teka.geminichatsdk.gemini_chat.data.ApiType
+import com.teka.geminichatsdk.spacee_gemini.utils.ApiType
 import com.teka.geminichatsdk.gemini_chat.data.Message
 import com.teka.geminichatsdk.spacee_gemini.presentation.MainViewModel
 

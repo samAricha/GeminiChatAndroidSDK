@@ -26,7 +26,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import com.teka.geminichatsdk.spacee_gemini.components.ConversationArea
 import com.teka.geminichatsdk.spacee_gemini.components.TypingArea
-import com.teka.geminichatsdk.gemini_chat.data.ApiType
+import com.teka.geminichatsdk.spacee_gemini.utils.ApiType
 import com.teka.geminichatsdk.spacee_gemini.components.SelectedImageArea
 import com.teka.geminichatsdk.spacee_gemini.presentation.MainViewModel
 import com.teka.geminichatsdk.spacee_gemini.utils.ImageHelper

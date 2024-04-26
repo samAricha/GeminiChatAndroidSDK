@@ -16,7 +16,7 @@ import com.google.ai.client.generativeai.type.HarmCategory
 import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
 import com.teka.geminichatsdk.BuildConfig
-import com.teka.geminichatsdk.gemini_chat.data.ApiType
+import com.teka.geminichatsdk.spacee_gemini.utils.ApiType
 import com.teka.geminichatsdk.gemini_chat.data.Message
 import com.teka.geminichatsdk.gemini_chat.data.Mode
 import com.teka.geminichatsdk.spacee_gemini.data.MessageDao
