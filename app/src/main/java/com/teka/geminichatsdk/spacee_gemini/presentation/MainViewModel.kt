@@ -98,7 +98,11 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
             }
             text(prompt)
         }
-        makeGeneralQuery(ApiType.IMAGE_CHAT, _imageResponse, inputContent)
+        makeGeneralQuery(
+            ApiType.IMAGE_CHAT,
+            _imageResponse,
+            inputContent
+        )
     }
 
 
@@ -149,6 +153,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                     ApiType.SINGLE_CHAT -> model?.generateContentStream(feed as String)
                     ApiType.MULTI_CHAT -> chat?.sendMessageStream(feed as String)
                     ApiType.IMAGE_CHAT -> visionModel?.generateContentStream(feed as Content)
+                    ApiType.DOCUMENT_CHAT -> TODO()
                 }
 
                 stream?.collect { chunk ->
@@ -159,6 +164,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                         Message(text = output, mode = Mode.GEMINI, isGenerating = true)
                     )
                 }
+
                 result.value?.set(
                     result.value!!.lastIndex,
                     Message(text = output, mode = Mode.GEMINI, isGenerating = false)
@@ -198,7 +204,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
             safetySettings = listOf(
                 SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE),
                 SafetySetting(HarmCategory.DANGEROUS_CONTENT, BlockThreshold.NONE),
-                SafetySetting(HarmCategory.HATE_SPEECH, BlockThreshold.NONE),
+                SafetySetting(HarmCategory.HATE_SPEECH, BlockThreshold.MEDIUM_AND_ABOVE),
                 SafetySetting(HarmCategory.SEXUALLY_EXPLICIT, BlockThreshold.NONE),
             )
         )

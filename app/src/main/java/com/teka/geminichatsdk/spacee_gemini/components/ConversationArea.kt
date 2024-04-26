@@ -34,7 +34,8 @@ fun ConversationArea(
     val response: List<Message>? = when (apiType) {
         ApiType.MULTI_CHAT -> viewModel.conversationList.observeAsState().value?.toList()
         ApiType.SINGLE_CHAT -> TODO()
-        ApiType.IMAGE_CHAT -> TODO()
+        ApiType.IMAGE_CHAT -> viewModel.imageResponse.observeAsState().value?.toList()
+        ApiType.DOCUMENT_CHAT -> TODO()
     }
     Column(
         modifier = Modifier

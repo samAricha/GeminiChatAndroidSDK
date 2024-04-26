@@ -68,7 +68,8 @@ fun TypingArea(
     val isGenerating: Boolean? = when (apiType) {
         ApiType.MULTI_CHAT -> viewModel.conversationList.observeAsState().value?.lastOrNull()?.isGenerating
         ApiType.SINGLE_CHAT -> TODO()
-        ApiType.IMAGE_CHAT -> TODO()
+        ApiType.IMAGE_CHAT -> viewModel.imageResponse.observeAsState().value?.lastOrNull()?.isGenerating
+        ApiType.DOCUMENT_CHAT -> TODO()
     }
     val context = LocalContext.current
     Row(
@@ -78,7 +79,7 @@ fun TypingArea(
                 top = 10.dp,
                 bottom = 10.dp,
                 end = 10.dp,
-                start = if (apiType == ApiType.SINGLE_CHAT) 10.dp else 0.dp
+                start = 10.dp
             )
             .background(colorScheme.background),
         verticalAlignment = Alignment.CenterVertically,
@@ -178,8 +179,7 @@ fun TypingArea(
         }
 
 
-        when (apiType) {
-            ApiType.MULTI_CHAT -> IconButton(onClick = { expanded = true }
+           IconButton(onClick = { expanded = true }
             ) {
                 Icon(
                     modifier = Modifier.size(30.dp),
@@ -189,19 +189,6 @@ fun TypingArea(
                 )
             }
 
-            ApiType.IMAGE_CHAT -> IconButton(onClick = {
-                expanded = true
-            }) {
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    painter = painterResource(id = R.drawable.add_icon),
-                    tint = colorScheme.primary,
-                    contentDescription = "add"
-                )
-            }
-
-            ApiType.SINGLE_CHAT -> Unit
-        }
 
         OutlinedTextField(
             value = text,
@@ -242,7 +229,8 @@ fun TypingArea(
                                 .clickable {
                                     if (text.text
                                             .trim()
-                                            .isNotEmpty() && (apiType != ApiType.IMAGE_CHAT || bitmaps!!.isNotEmpty())
+                                            .isNotEmpty()
+                                        && (apiType != ApiType.IMAGE_CHAT || bitmaps!!.isNotEmpty())
                                     ) {
                                         keyboardController?.hide()
                                         focusManager.clearFocus()
@@ -254,7 +242,12 @@ fun TypingArea(
                                                 text.text.trim()
                                             )
 
-                                            ApiType.IMAGE_CHAT ->  TODO()
+                                            ApiType.IMAGE_CHAT ->  viewModel.makeImageQuery(
+                                                context,
+                                                text.text.trim(),
+                                                bitmaps!!
+                                            )
+                                            ApiType.DOCUMENT_CHAT -> TODO()
                                         }
                                         text = TextFieldValue("")
                                     }

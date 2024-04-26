@@ -15,7 +15,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -42,10 +44,23 @@ fun MultiTurnScreen(
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val apiTypeState = remember { mutableStateOf(ApiType.MULTI_CHAT) }
+
 
 
     val bitmaps: SnapshotStateList<Bitmap> = remember {
         mutableStateListOf()
+    }
+
+
+    LaunchedEffect(bitmaps.size) {
+        println("BITMAPS CHANGED1: ${apiTypeState.value} ${bitmaps.isNotEmpty()}")
+        if (bitmaps.isNotEmpty()) {
+            apiTypeState.value = ApiType.IMAGE_CHAT
+        } else {
+            apiTypeState.value = ApiType.MULTI_CHAT
+        }
+        println("BITMAPS CHANGED2: ${apiTypeState.value}")
     }
 
     val imageRequestBuilder = ImageRequest.Builder(context)
@@ -97,12 +112,12 @@ fun MultiTurnScreen(
             Box(
                 modifier = Modifier.weight(1f)
             ) {
-                ConversationArea(viewModel = viewModel, apiType = ApiType.MULTI_CHAT)
+                ConversationArea(viewModel = viewModel, apiType = apiTypeState.value)
             }
             SelectedImageArea(bitmaps = bitmaps)
             TypingArea(
                 viewModel = viewModel,
-                apiType = ApiType.IMAGE_CHAT,
+                apiType = apiTypeState.value,
                 bitmaps = bitmaps,
                 galleryLauncher = galleryLauncher,
                 permissionLauncher = permissionLauncher
