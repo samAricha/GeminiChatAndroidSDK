@@ -55,15 +55,22 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
             )
         )
 
+        //initiating Generative Model if not present
         if (model == null) {
             viewModelScope.launch {
                 model = getModel(key = BuildConfig.GEMINI_KEY)
             }
         }
+        //initiating Generative Chat if not present
         if (chat == null) {
             chat = getChat()
         }
-        makeGeneralQuery(ApiType.MULTI_CHAT, _conversationList, prompt)
+
+        makeGeneralQuery(
+            apiType = ApiType.MULTI_CHAT,
+            result = _conversationList,
+            feed = prompt
+        )
     }
 
     fun clearContext() {
@@ -101,6 +108,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                     result.value!!.lastIndex,
                     Message(text = output, mode = Mode.GEMINI, isGenerating = false)
                 )
+
                 if (apiType == ApiType.MULTI_CHAT) {
                     viewModelScope.launch {
                         dao.upsertMessage(
@@ -144,9 +152,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
         val history = mutableListOf<Content>()
         for (message in conversationList.value.orEmpty()) {
             history.add(content(role = if (message.mode == Mode.USER) "user" else "model") {
-                text(
-                    message.text
-                )
+                text(message.text)
             })
         }
         return history
@@ -154,12 +160,5 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     private fun convertToSnapshotStateList(messages: List<Message>): SnapshotStateList<Message> {
         return mutableStateListOf(*messages.toTypedArray())
-    }
-
-    sealed class ValidationState {
-        object Idle : ValidationState()
-        object Checking : ValidationState()
-        object Valid : ValidationState()
-        object Invalid : ValidationState()
     }
 }

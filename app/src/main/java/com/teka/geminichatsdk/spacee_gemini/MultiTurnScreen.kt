@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -15,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import com.teka.geminichatsdk.spacee_gemini.components.ConversationArea
-import com.spongycode.spaceegemini.components.TypingArea
+import com.teka.geminichatsdk.spacee_gemini.components.TypingArea
 import com.teka.geminichatsdk.gemini_chat.data.ApiType
 
 @ExperimentalMaterial3Api
@@ -41,7 +40,7 @@ fun MultiTurnScreen(
             Box(
                 modifier = Modifier.weight(1f)
             ) {
-                ConversationArea(viewModel, apiType = ApiType.MULTI_CHAT)
+                ConversationArea(viewModel = viewModel, apiType = ApiType.MULTI_CHAT)
             }
             TypingArea(
                 viewModel = viewModel,

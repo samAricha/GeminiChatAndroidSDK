@@ -1,4 +1,4 @@
-package com.spongycode.spaceegemini.components
+package com.teka.geminichatsdk.spacee_gemini.components
 
 import android.Manifest
 import android.graphics.Bitmap
@@ -64,6 +64,7 @@ fun TypingArea(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     var text by remember { mutableStateOf(TextFieldValue("")) }
+
     val isGenerating: Boolean? = when (apiType) {
         ApiType.MULTI_CHAT -> viewModel.conversationList.observeAsState().value?.lastOrNull()?.isGenerating
         ApiType.SINGLE_CHAT -> TODO()
@@ -132,6 +133,27 @@ fun TypingArea(
                     text = "Gallery", fontSize = 15.sp, fontWeight = FontWeight.W600
                 )
             }
+            DropdownMenuItem(
+                modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
+                onClick = {
+                    expanded = false
+                    galleryLauncher?.launch("image/*")
+                }
+            ) {
+                Icon(
+                    modifier = Modifier.size(25.dp),
+                    painter = painterResource(id = R.drawable.document_icon),
+                    tint = colorScheme.primary,
+                    contentDescription = "document"
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    color = colorScheme.primary,
+                    text = "Document",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.W600
+                )
+            }
         }
 
 
@@ -148,8 +170,7 @@ fun TypingArea(
 
             ApiType.IMAGE_CHAT -> IconButton(onClick = {
                 expanded = true
-            }
-            ) {
+            }) {
                 Icon(
                     modifier = Modifier.size(30.dp),
                     painter = painterResource(id = R.drawable.add_icon),
@@ -167,7 +188,7 @@ fun TypingArea(
             placeholder = {
                 Text(
                     color = MaterialTheme.colorScheme.inversePrimary,
-                    text = "Ask a question"
+                    text = "What would you like to know?"
                 )
             },
             modifier = Modifier
