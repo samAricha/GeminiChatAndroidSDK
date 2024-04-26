@@ -1,4 +1,4 @@
-package com.teka.geminichatsdk.spacee_gemini
+package com.teka.geminichatsdk.spacee_gemini.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

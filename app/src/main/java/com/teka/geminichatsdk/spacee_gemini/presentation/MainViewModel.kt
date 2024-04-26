@@ -1,4 +1,4 @@
-package com.teka.geminichatsdk.spacee_gemini
+package com.teka.geminichatsdk.spacee_gemini.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -19,6 +19,7 @@ import com.teka.geminichatsdk.BuildConfig
 import com.teka.geminichatsdk.gemini_chat.data.ApiType
 import com.teka.geminichatsdk.gemini_chat.data.Message
 import com.teka.geminichatsdk.gemini_chat.data.Mode
+import com.teka.geminichatsdk.spacee_gemini.data.MessageDao
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val dao: MessageDao) : ViewModel() {
@@ -26,14 +27,17 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
     private val _conversationList = MutableLiveData(mutableStateListOf<Message>())
     val conversationList: LiveData<SnapshotStateList<Message>> = _conversationList
 
+    private val _imageResponse = MutableLiveData(mutableStateListOf<Message>())
+    val imageResponse: LiveData<SnapshotStateList<Message>> = _imageResponse
 
-    private val tempApiKey = MutableLiveData("")
+    private val _documentResponse = MutableLiveData(mutableStateListOf<Message>())
+    val documentResponse: LiveData<SnapshotStateList<Message>> = _documentResponse
 
-    private val _isHomeVisit = MutableLiveData<Boolean>(false)
-    val isHomeVisit: LiveData<Boolean> = _isHomeVisit
+
 
     private var model: GenerativeModel? = null
     private var visionModel: GenerativeModel? = null
+    private var documentModel: GenerativeModel? = null
     private var chat: Chat? = null
 
     init {
@@ -72,6 +76,57 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
             feed = prompt
         )
     }
+
+    fun makeImageQuery(context: Context, prompt: String, bitmaps: List<Bitmap>) {
+        _imageResponse.value?.clear()
+        _imageResponse.value?.add(Message(text = prompt, mode = Mode.USER))
+        _imageResponse.value?.add(
+            Message(
+                text = "Generating",
+                mode = Mode.GEMINI,
+                isGenerating = true
+            )
+        )
+        if (visionModel == null) {
+            viewModelScope.launch {
+                visionModel = getModel(key = BuildConfig.GEMINI_KEY, vision = true)
+            }
+        }
+        val inputContent = content {
+            bitmaps.take(4).forEach {
+                image(it)
+            }
+            text(prompt)
+        }
+        makeGeneralQuery(ApiType.IMAGE_CHAT, _imageResponse, inputContent)
+    }
+
+
+    fun makeDocumentQuery(context: Context, prompt: String, bitmaps: List<Bitmap>) {
+        _documentResponse.value?.clear()
+        _documentResponse.value?.add(Message(text = prompt, mode = Mode.USER))
+        _documentResponse.value?.add(
+            Message(
+                text = "Generating",
+                mode = Mode.GEMINI,
+                isGenerating = true
+            )
+        )
+        if (visionModel == null) {
+            viewModelScope.launch {
+                visionModel = getModel(key = BuildConfig.GEMINI_KEY, vision = true)
+            }
+        }
+        val inputContent = content {
+            bitmaps.take(4).forEach {
+                image(it)
+            }
+            text(prompt)
+        }
+        makeGeneralQuery(ApiType.IMAGE_CHAT, _imageResponse, inputContent)
+    }
+
+
 
     fun clearContext() {
         _conversationList.value?.clear()
@@ -139,6 +194,18 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
     private fun getModel(key: String, vision: Boolean = false) =
         GenerativeModel(
             modelName = if (vision) "gemini-pro-vision" else "gemini-pro",
+            apiKey = key,
+            safetySettings = listOf(
+                SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE),
+                SafetySetting(HarmCategory.DANGEROUS_CONTENT, BlockThreshold.NONE),
+                SafetySetting(HarmCategory.HATE_SPEECH, BlockThreshold.NONE),
+                SafetySetting(HarmCategory.SEXUALLY_EXPLICIT, BlockThreshold.NONE),
+            )
+        )
+
+    private fun getGeminiProModel(key: String) =
+        GenerativeModel(
+            modelName = "gemini-1.5-pro-gf-fc",
             apiKey = key,
             safetySettings = listOf(
                 SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE),

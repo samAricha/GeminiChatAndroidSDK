@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
@@ -61,9 +60,9 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.teka.geminichatsdk.gemini_chat.presentation.ChatUiEvent
 import com.teka.geminichatsdk.gemini_chat.presentation.ChatViewModel
-import com.teka.geminichatsdk.spacee_gemini.MainViewModel
-import com.teka.geminichatsdk.spacee_gemini.MessageDatabase
-import com.teka.geminichatsdk.spacee_gemini.MultiTurnScreen
+import com.teka.geminichatsdk.spacee_gemini.presentation.MainViewModel
+import com.teka.geminichatsdk.spacee_gemini.data.MessageDatabase
+import com.teka.geminichatsdk.spacee_gemini.presentation.screens.MultiTurnScreen
 import com.teka.geminichatsdk.ui.theme.GeminiChatAndroidSDKTheme
 import com.teka.geminichatsdk.ui.theme.Green
 import kotlinx.coroutines.flow.MutableStateFlow

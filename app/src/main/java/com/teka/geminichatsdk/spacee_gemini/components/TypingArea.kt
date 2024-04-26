@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.teka.geminichatsdk.R
 import com.teka.geminichatsdk.gemini_chat.data.ApiType
-import com.teka.geminichatsdk.spacee_gemini.MainViewModel
+import com.teka.geminichatsdk.spacee_gemini.presentation.MainViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -154,17 +154,38 @@ fun TypingArea(
                     fontWeight = FontWeight.W600
                 )
             }
+            DropdownMenuItem(
+                modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
+                onClick = {
+                    expanded = false
+                    viewModel.clearContext()
+                }
+            ) {
+                Icon(
+                    modifier = Modifier.size(25.dp),
+                    painter = painterResource(id = R.drawable.refresh),
+                    tint = colorScheme.primary,
+                    contentDescription = "refresh"
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    color = colorScheme.primary,
+                    text = "Refresh",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.W600
+                )
+            }
         }
 
 
         when (apiType) {
-            ApiType.MULTI_CHAT -> IconButton(onClick = { viewModel.clearContext() }
+            ApiType.MULTI_CHAT -> IconButton(onClick = { expanded = true }
             ) {
                 Icon(
                     modifier = Modifier.size(30.dp),
-                    painter = painterResource(id = R.drawable.refresh),
+                    painter = painterResource(id = R.drawable.add_icon),
                     tint = colorScheme.primary,
-                    contentDescription = "refresh"
+                    contentDescription = "add"
                 )
             }
 
