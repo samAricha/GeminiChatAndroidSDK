@@ -19,7 +19,11 @@ import com.teka.geminichatsdk.BuildConfig
 import com.teka.geminichatsdk.spacee_gemini.utils.ApiType
 import com.teka.geminichatsdk.gemini_chat.data.Message
 import com.teka.geminichatsdk.gemini_chat.data.Mode
+import com.teka.geminichatsdk.spacee_gemini.data.ChatStatusModel
 import com.teka.geminichatsdk.spacee_gemini.data.MessageDao
+import com.teka.geminichatsdk.spacee_gemini.domain.GeminiRepository
+import com.teka.geminichatsdk.spacee_gemini.domain.GeminiRepositoryImpl
+import com.teka.geminichatsdk.spacee_gemini.domain.GeminiService
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val dao: MessageDao) : ViewModel() {
@@ -99,35 +103,41 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
             text(prompt)
         }
         makeGeneralQuery(
-            ApiType.IMAGE_CHAT,
-            _imageResponse,
-            inputContent
+            apiType = ApiType.IMAGE_CHAT,
+            result = _imageResponse,
+            feed = inputContent
         )
     }
 
 
-    fun makeDocumentQuery(context: Context, prompt: String, bitmaps: List<Bitmap>) {
+    fun makeDocumentQuery(prompt: String) {
+        println("DOCUMENT MODEL=========>")
         _documentResponse.value?.clear()
         _documentResponse.value?.add(Message(text = prompt, mode = Mode.USER))
         _documentResponse.value?.add(
             Message(
-                text = "Generating",
+                text = "Generating.......",
                 mode = Mode.GEMINI,
                 isGenerating = true
             )
         )
-        if (visionModel == null) {
+        if (documentModel == null) {
             viewModelScope.launch {
-                visionModel = getModel(key = BuildConfig.GEMINI_KEY, vision = true)
+                documentModel = getGeminiProModel(key = BuildConfig.GEMINI_KEY)
             }
         }
+
         val inputContent = content {
-            bitmaps.take(4).forEach {
-                image(it)
-            }
             text(prompt)
         }
-        makeGeneralQuery(ApiType.IMAGE_CHAT, _imageResponse, inputContent)
+
+
+
+        makeGeneralQuery(
+            apiType = ApiType.DOCUMENT_CHAT,
+            result = _documentResponse,
+            feed = prompt
+        )
     }
 
 
@@ -153,7 +163,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
                     ApiType.SINGLE_CHAT -> model?.generateContentStream(feed as String)
                     ApiType.MULTI_CHAT -> chat?.sendMessageStream(feed as String)
                     ApiType.IMAGE_CHAT -> visionModel?.generateContentStream(feed as Content)
-                    ApiType.DOCUMENT_CHAT -> TODO()
+                    ApiType.DOCUMENT_CHAT -> documentModel?.generateContentStream(feed as String)
                 }
 
                 stream?.collect { chunk ->
@@ -211,7 +221,7 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     private fun getGeminiProModel(key: String) =
         GenerativeModel(
-            modelName = "gemini-1.5-pro-gf-fc",
+            modelName = "gemini-1.5-pro-latest",
             apiKey = key,
             safetySettings = listOf(
                 SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.NONE),
@@ -233,5 +243,23 @@ class MainViewModel(private val dao: MessageDao) : ViewModel() {
 
     private fun convertToSnapshotStateList(messages: List<Message>): SnapshotStateList<Message> {
         return mutableStateListOf(*messages.toTypedArray())
+    }
+
+
+
+    private val geminiRepository: GeminiRepository = GeminiRepositoryImpl()
+
+    private val geminiService = GeminiService()
+
+    fun generateDocumentContent(message: String, images: List<ByteArray> = emptyList()) {
+        viewModelScope.launch {
+//            val response = geminiRepository.generate(message, images)
+
+            val response = geminiService.generateContentWithFiles(message, images)
+
+
+
+
+        }
     }
 }

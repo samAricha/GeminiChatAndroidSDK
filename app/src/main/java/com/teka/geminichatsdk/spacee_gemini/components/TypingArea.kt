@@ -59,6 +59,7 @@ fun TypingArea(
     apiType: ApiType,
     bitmaps: SnapshotStateList<Bitmap>? = null,
     galleryLauncher: ManagedActivityResultLauncher<String, List<@JvmSuppressWildcards Uri>>? = null,
+    documentLauncher: ManagedActivityResultLauncher<String, List<@JvmSuppressWildcards Uri>>? = null,
     permissionLauncher: ManagedActivityResultLauncher<String, Boolean>? = null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -69,7 +70,7 @@ fun TypingArea(
         ApiType.MULTI_CHAT -> viewModel.conversationList.observeAsState().value?.lastOrNull()?.isGenerating
         ApiType.SINGLE_CHAT -> TODO()
         ApiType.IMAGE_CHAT -> viewModel.imageResponse.observeAsState().value?.lastOrNull()?.isGenerating
-        ApiType.DOCUMENT_CHAT -> TODO()
+        ApiType.DOCUMENT_CHAT -> viewModel.documentResponse.observeAsState().value?.lastOrNull()?.isGenerating
     }
     val context = LocalContext.current
     Row(
@@ -138,7 +139,8 @@ fun TypingArea(
                 modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer),
                 onClick = {
                     expanded = false
-                    galleryLauncher?.launch("application/*")
+                    documentLauncher?.launch("application/*")
+//                    galleryLauncher?.launch("application/pdf")
                 }
             ) {
                 Icon(
@@ -247,7 +249,9 @@ fun TypingArea(
                                                 text.text.trim(),
                                                 bitmaps!!
                                             )
-                                            ApiType.DOCUMENT_CHAT -> TODO()
+                                            ApiType.DOCUMENT_CHAT -> viewModel.makeDocumentQuery(
+                                                text.text.trim(),
+                                            )
                                         }
                                         text = TextFieldValue("")
                                     }

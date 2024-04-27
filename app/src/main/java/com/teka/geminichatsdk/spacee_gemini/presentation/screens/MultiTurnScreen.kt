@@ -44,7 +44,7 @@ fun MultiTurnScreen(
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val apiTypeState = remember { mutableStateOf(ApiType.MULTI_CHAT) }
+    val apiTypeState = remember { mutableStateOf(ApiType.DOCUMENT_CHAT) }
 
 
 
@@ -58,7 +58,7 @@ fun MultiTurnScreen(
         if (bitmaps.isNotEmpty()) {
             apiTypeState.value = ApiType.IMAGE_CHAT
         } else {
-            apiTypeState.value = ApiType.MULTI_CHAT
+            apiTypeState.value = ApiType.DOCUMENT_CHAT
         }
         println("BITMAPS CHANGED2: ${apiTypeState.value}")
     }
@@ -97,6 +97,18 @@ fun MultiTurnScreen(
         }
     }
 
+    val documentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+    ) {
+        it.forEach { uri ->
+            coroutineScope.launch {
+//                ImageHelper.scaleDownBitmap(uri, imageRequestBuilder, imageLoader)?.let { bitmap ->
+//                    bitmaps.add(bitmap)
+//                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
 
@@ -112,7 +124,10 @@ fun MultiTurnScreen(
             Box(
                 modifier = Modifier.weight(1f)
             ) {
-                ConversationArea(viewModel = viewModel, apiType = apiTypeState.value)
+                ConversationArea(
+                    viewModel = viewModel,
+                    apiType = apiTypeState.value
+                )
             }
             SelectedImageArea(bitmaps = bitmaps)
             TypingArea(
@@ -120,6 +135,7 @@ fun MultiTurnScreen(
                 apiType = apiTypeState.value,
                 bitmaps = bitmaps,
                 galleryLauncher = galleryLauncher,
+                documentLauncher = documentLauncher,
                 permissionLauncher = permissionLauncher
             )
         }

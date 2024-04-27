@@ -35,8 +35,9 @@ fun ConversationArea(
         ApiType.MULTI_CHAT -> viewModel.conversationList.observeAsState().value?.toList()
         ApiType.SINGLE_CHAT -> TODO()
         ApiType.IMAGE_CHAT -> viewModel.imageResponse.observeAsState().value?.toList()
-        ApiType.DOCUMENT_CHAT -> TODO()
+        ApiType.DOCUMENT_CHAT -> viewModel.documentResponse.observeAsState().value?.toList()
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
