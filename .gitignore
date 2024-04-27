@@ -12,6 +12,8 @@
 /captures
 .externalNativeBuild
 .cxx
+.idea.*
 local.properties
 apikeys.properties
 .gitignore
+
