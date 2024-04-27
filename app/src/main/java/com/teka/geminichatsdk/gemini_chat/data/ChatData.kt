@@ -2,6 +2,12 @@ package com.teka.geminichatsdk.gemini_chat.data
 
 import android.graphics.Bitmap
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.java.ChatFutures
+import com.google.ai.client.generativeai.java.GenerativeModelFutures
+import com.google.ai.client.generativeai.type.BlockThreshold
+import com.google.ai.client.generativeai.type.GenerationConfig
+import com.google.ai.client.generativeai.type.HarmCategory
+import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
 import com.teka.geminichatsdk.BuildConfig
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +21,23 @@ object ChatData {
 
     suspend fun getResponse(prompt: String): ChatModel {
         val generativeModel = GenerativeModel(
-            modelName = "gemini-pro", apiKey = api_key
+            modelName = "gemini-pro",
+            apiKey = api_key
+        )
+
+//        val generativeModel = getChatModel()
+
+        val chat = generativeModel.startChat(
+//            history = listOf(
+//                content(role = "user") { text("Hello, I have 2 dogs in my house.") },
+////                content(role = "model") { text("Great to meet you. What would you like to know?") }
+//            )
         )
 
         try {
             val response = withContext(Dispatchers.IO) {
-                generativeModel.generateContent(prompt)
+                chat.sendMessage(prompt)
+//                generativeModel.generateContent(prompt)
             }
 
             return ChatModel(
@@ -70,6 +87,35 @@ object ChatData {
         }
 
     }
+
+
+    private fun getChatModel(): ChatFutures {
+        val modelFutures: GenerativeModelFutures = getGeminiModel()
+        return modelFutures.startChat()
+    }
+
+    fun getGeminiModel(): GenerativeModelFutures {
+        val apiKey: String = BuildConfig.GEMINI_KEY
+        val harassmentSafety = SafetySetting(
+            HarmCategory.HARASSMENT,
+            BlockThreshold.ONLY_HIGH
+        )
+
+        val configBuilder: GenerationConfig.Builder = GenerationConfig.Builder()
+
+        configBuilder.temperature = 0.9f
+        configBuilder.topK = 16
+        configBuilder.topP = 0.1f
+        val generationConfig: GenerationConfig = configBuilder.build()
+        val gm = GenerativeModel(
+            "gemini-pro",
+            apiKey,
+            generationConfig,
+            listOf(harassmentSafety)
+        )
+        return GenerativeModelFutures.from(gm)
+    }
+
 
 }
 

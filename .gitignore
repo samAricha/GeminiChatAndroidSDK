@@ -15,3 +15,5 @@
 .idea.*
 local.properties
 apikeys.properties
+.gitignore
+

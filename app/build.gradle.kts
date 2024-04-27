@@ -4,6 +4,8 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
 }
 
 val apikeyPropertiesFile = rootProject.file("apikeys.properties")
@@ -88,7 +90,10 @@ dependencies {
 
     implementation(project(":gemini_android_chat"))
 
+    implementation("androidx.compose.material:material:1.5.4")
+    implementation("androidx.compose.material3:material3:1.1.2")
 
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -96,5 +101,27 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.6")
 
     implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
+
+
+    // Room
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
+    val coroutinesVersion = "1.8.0"
+    val ktorVersion = "2.3.9"
+    //ktor
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
 
 }

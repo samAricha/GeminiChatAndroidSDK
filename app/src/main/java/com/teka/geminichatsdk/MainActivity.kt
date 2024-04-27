@@ -1,5 +1,6 @@
 package com.teka.geminichatsdk
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -7,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,29 +40,49 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import com.teka.geminichatsdk.gemini_chat.presentation.ChatUiEvent
 import com.teka.geminichatsdk.gemini_chat.presentation.ChatViewModel
+import com.teka.geminichatsdk.spacee_gemini.presentation.MainViewModel
+import com.teka.geminichatsdk.spacee_gemini.data.MessageDatabase
+import com.teka.geminichatsdk.spacee_gemini.presentation.screens.MultiTurnScreen
 import com.teka.geminichatsdk.ui.theme.GeminiChatAndroidSDKTheme
 import com.teka.geminichatsdk.ui.theme.Green
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 class MainActivity : ComponentActivity() {
+
+    private val db by lazy {
+        Room.databaseBuilder(applicationContext, MessageDatabase::class.java, "message.db").build()
+    }
+
+    private val viewModel by viewModels<MainViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return MainViewModel(db.dao) as T
+                }
+            }
+        }
+    )
 
 
     private val uriState = MutableStateFlow("")
@@ -74,6 +96,8 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -103,7 +127,8 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     ) {
-                        ChatScreen(paddingValues = it)
+//                        ChatScreen(paddingValues = it)
+                        MultiTurnScreen(viewModel = viewModel)
                     }
 
                 }
